@@ -1,0 +1,195 @@
+{
+  "version": "2.0",
+  "environment": "production",
+  "description": "BPA DataSolution - Configuración unificada de procesos de extracción",
+  "last_updated": "2024-04-24",
+  
+  "projects": [
+    {
+      "id": "titania",
+      "name": "Titania",
+      "description": "Sistema de chat - Extracción de queries SQL",
+      "type": "sql_export",
+      "enabled": true,
+      "category": "chat_analytics",
+      
+      "execution": {
+        "extractor": "titania",
+        "script": "${DATACENTRIC_ROOT}/services/extraction-runner/entrypoints/titania_entrypoint.py",
+        "workdir": "${DATACENTRIC_ROOT}/services/extraction-runner",
+        "python": "${UNIFIED_PYTHON}",
+        "query_dir": "${DATACENTRIC_ROOT}/Querys/Titania",
+        "credentials_file": "${DATACENTRIC_ROOT}/Parametros/Titania/Cred_Con.txt",
+        "timeout_seconds": 1800,
+        "env_vars": {}
+      },
+      
+      "parameters": {
+        "query": {
+          "type": "select",
+          "label": "Query",
+          "description": "Seleccionar query a exportar",
+          "required": true,
+          "default": "all",
+          "options": {
+            "all": {
+              "value": "all",
+              "label": "Todas las queries",
+              "description": "Exporta todas las queries disponibles"
+            },
+            "VW_n8n_chat_histories_classfication": {
+              "value": "VW_n8n_chat_histories_classfication",
+              "label": "Chat Histories - Classification",
+              "description": "Chat histories clasificadas"
+            },
+            "VW_n8n_chat_histories_textual_all": {
+              "value": "VW_n8n_chat_histories_textual_all",
+              "label": "Chat Histories - All Textual",
+              "description": "Todos los chats textuales"
+            },
+            "VW_n8n_chat_history_textual_analisis_respuestas": {
+              "value": "VW_n8n_chat_history_textual_analisis_respuestas",
+              "label": "Chat History - Answer Analysis",
+              "description": "Análisis de respuestas"
+            },
+            "VW_n8n_chat_history_textual_analisis_WordCloud_2": {
+              "value": "VW_n8n_chat_history_textual_analisis_WordCloud_2",
+              "label": "Chat History - WordCloud",
+              "description": "Análisis WordCloud"
+            },
+            "VW_n8n_chat_history_textual": {
+              "value": "VW_n8n_chat_history_textual",
+              "label": "Chat History - Textual",
+              "description": "Historial de chats textuales"
+            },
+            "VW_n8n_chat_user_banned": {
+              "value": "VW_n8n_chat_user_banned",
+              "label": "Chat User - Banned",
+              "description": "Usuarios baneados"
+            }
+          }
+        },
+        "database": {
+          "type": "text",
+          "label": "Database",
+          "description": "Base de datos específica (opcional)",
+          "required": false,
+          "default": null,
+          "placeholder": "Dejar vacío para usar default"
+        }
+      },
+      
+      "outputs": {
+        "directory": "${DATACENTRIC_ROOT}/Outputs/Titania"
+      },
+      
+      "scheduling": {
+        "enabled": true,
+        "scheduler": "windows_task",
+        "expressions": [
+          "50 7,9,11,13,15,17 * * 1,2,3,4,5"
+        ],
+        "windows_task": {
+          "names": ["Titania_Download_Cada2Horas"],
+          "default": "Titania_Download_Cada2Horas"
+        }
+      },
+      
+      "metadata": {
+        "owner": "Data Team",
+        "slack_channel": "#data-updates",
+        "sla_hours": 2,
+        "criticality": "high",
+        "scheduler_owner": "windows_task",
+        "manual_contingency": "C:/Users/javier.castaneda/botsquad/Titania/run_export_manual.ps1"
+      }
+    },
+    
+    {
+      "id": "onnet",
+      "name": "ONNET",
+      "description": "Sistema de operaciones - Modelos 3 y 4",
+      "type": "sql_export",
+      "enabled": true,
+      "category": "operations",
+      
+      "execution": {
+        "extractor": "onnet",
+        "script": "${DATACENTRIC_ROOT}/services/extraction-runner/entrypoints/onnet_entrypoint.py",
+        "workdir": "${DATACENTRIC_ROOT}/services/extraction-runner",
+        "python": "${UNIFIED_PYTHON}",
+        "env_file": "${DATACENTRIC_ROOT}/Parametros/Onnet/.env",
+        "timeout_seconds": 3600,
+        "env_vars": {}
+      },
+      
+      "parameters": {
+        "model": {
+          "type": "select",
+          "label": "Model",
+          "description": "Modelo ONNET a exportar",
+          "required": true,
+          "default": "all",
+          "options": {
+            "all": {
+              "value": "all",
+              "label": "Todos los modelos",
+              "description": "Exporta Modelo 3 y Modelo 4"
+            },
+            "modelo3": {
+              "value": "modelo3",
+              "label": "Modelo 3 - Transacciones",
+              "description": "Datos de transacciones"
+            },
+            "modelo4": {
+              "value": "modelo4",
+              "label": "Modelo 4 - Tickets",
+              "description": "Datos de tickets/incidentes"
+            }
+          }
+        }
+      },
+      
+      "outputs": {
+        "directory": "${DATACENTRIC_ROOT}/Outputs/Onnet"
+      },
+      
+      "scheduling": {
+        "enabled": true,
+        "scheduler": "windows_task",
+        "expressions": [
+          "50 8,12,16,20 * * 1,2,3,4,5"
+        ],
+        "windows_task": {
+          "names": ["ONNET_Download_Cada4Horas"],
+          "default": "ONNET_Download_Cada4Horas"
+        }
+      },
+      
+      "metadata": {
+        "owner": "Operations Team",
+        "slack_channel": "#ops-updates",
+        "sla_hours": 4,
+        "criticality": "critical",
+        "scheduler_owner": "windows_task",
+        "manual_contingency": "C:/Users/javier.castaneda/botsquad/ONNET/run_export_manual.ps1"
+      }
+    }
+  ],
+  
+  "global_settings": {
+    "log_level": "INFO",
+    "max_concurrent_executions": 3,
+    "temp_directory": "${BPA_ROOT}/temp",
+    "archive_directory": "${BPA_ROOT}/archive"
+  },
+  
+  "environment_variables": {
+    "PROJECT_ROOT": "${PROJECT_ROOT}",
+    "TITANIA_ROOT": "${PROJECT_ROOT}/Titania",
+    "ONNET_ROOT": "${PROJECT_ROOT}/ONNET",
+    "DATACENTRIC_ROOT": "${PROJECT_ROOT}/BPA_DataCentric",
+    "BPA_ROOT": "${PROJECT_ROOT}/BPA_DataSolution",
+    "UNIFIED_PYTHON": "${BPA_ROOT}/.venv/Scripts/python.exe"
+  }
+}

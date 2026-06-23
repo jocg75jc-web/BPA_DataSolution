@@ -1,0 +1,24 @@
+{
+  "required": [
+    "PROJECT_ROOT",
+    "TITANIA_ROOT",
+    "ONNET_ROOT",
+    "DATACENTRIC_ROOT",
+    "BPA_ROOT"
+  ],
+  "recommended": [
+    "AZURE_STORAGE_CONNECTION_STRING",
+    "AZURE_STORAGE_CONTAINER",
+    "PROCESS_MONITOR_PORT",
+    "PROCESS_MONITOR_API_BASE_URL",
+    "EXPORT_ENABLE_LOCK"
+  ],
+  "paths_must_exist": [
+    "${DATACENTRIC_ROOT}/Querys/Titania",
+    "${DATACENTRIC_ROOT}/Querys/Onnet",
+    "${DATACENTRIC_ROOT}/Outputs/Titania",
+    "${DATACENTRIC_ROOT}/Outputs/Onnet",
+    "${DATACENTRIC_ROOT}/Parametros/Titania",
+    "${DATACENTRIC_ROOT}/Parametros/Onnet"
+  ]
+}
